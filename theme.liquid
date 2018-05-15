@@ -1,0 +1,144 @@
+<!doctype html>
+<!--[if IE 9]> <html class="ie9 no-js" lang="{{ shop.locale }}"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html class="no-js" lang="{{ shop.locale }}"> <!--<![endif]-->
+<head>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NQXNXJZ');</script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="{{ settings.color_header_bg }}">
+
+  {% if settings.favicon != blank %}
+    <link rel="shortcut icon" href="{{ settings.favicon | img_url: '32x32' }}" type="image/png">
+  {% endif %}
+
+  <link rel="canonical" href="{{ canonical_url }}">
+  {% include 'SEOManager' %}
+
+  {% include 'social-meta-tags' %}
+
+  <script>
+    document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+  </script>
+
+  {{ 'theme.scss.css' | asset_url | stylesheet_tag }}
+  {% include 'google-fonts' %}
+
+  <script>
+    window.theme = window.theme || {};
+
+    theme.strings = {
+      stockAvailable: {{ 'products.product.stock_available' | t: count: '1' | json }},
+      addToCart: {{ 'products.product.add_to_cart' | t | json }},
+      soldOut: {{ 'products.product.sold_out' | t | json }},
+      unavailable: {{ 'products.product.unavailable' | t | json }},
+      noStockAvailable: {{ 'products.product.stock_unavailable' | t | json }},
+      willNotShipUntil: {{ 'products.product.will_not_ship_until' | t: date: '[date]' | json }},
+      willBeInStockAfter: {{ 'products.product.will_be_in_stock_after' | t: date: '[date]' | json }},
+      totalCartDiscount: {{ 'cart.general.savings_html' | t: price: '[savings]' | json }},
+      addressError: {{ 'sections.map.address_error' | t | json }},
+      addressNoResults: {{ 'sections.map.address_no_results' | t | json }},
+      addressQueryLimit: {{ 'sections.map.address_query_limit_html' | t | json }},
+      authError: {{ 'sections.map.auth_error_html' | t | json }}
+    };
+  </script>
+
+  <!--[if (gt IE 9)|!(IE)]><!--><script src="{{ 'lazysizes.min.js' | asset_url }}" async="async"></script><!--<![endif]-->
+  <!--[if lte IE 9]><script src="{{ 'lazysizes.min.js' | asset_url }}"></script><![endif]-->
+
+  {% if template.directory == 'customers' %}
+    <!--[if (gt IE 9)|!(IE)]><!--><script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer="defer"></script><!--<![endif]-->
+    <!--[if lte IE 9]><script src="{{ 'shopify_common.js' | shopify_asset_url }}"></script><![endif]-->
+  {% endif %}
+
+  <!--[if (gt IE 9)|!(IE)]><!--><script src="{{ 'vendor.js' | asset_url }}" defer="defer"></script><!--<![endif]-->
+  <!--[if lt IE 9]><script src="{{ 'vendor.js' | asset_url }}"></script><![endif]-->
+
+  {% if template.name == 'product' or template.name == 'cart' %}
+    <script>
+      window.theme = window.theme || {};
+      theme.moneyFormat = {{ shop.money_format | json }};
+    </script>
+  {% endif %}
+
+  <!--[if (gt IE 9)|!(IE)]><!--><script src="{{ 'theme.js' | asset_url }}" defer="defer"></script><!--<![endif]-->
+  <!--[if lte IE 9]><script src="{{ 'theme.js' | asset_url }}"></script><![endif]-->
+
+  {{ content_for_header }}
+</head>
+
+<body class="template-{{ template | replace: '.', ' ' | truncatewords: 1, '' | handle }}" >
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NQXNXJZ"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <a class="in-page-link visually-hidden skip-link" href="#MainContent">
+    {{ 'general.accessibility.skip_to_content' | t }}
+  </a>
+
+  {% section 'header' %}
+
+  <div class="page-container page-element is-moved-by-drawer">
+    <main class="main-content" id="MainContent" role="main">
+      {{ content_for_layout }}
+    </main>
+
+    {% section 'footer' %}
+  </div>
+
+  
+  
+  <script id="QuantityTemplate" type="text/template">
+    {% raw %}
+      <div class="js-qty">
+        <input type="text" value="{{ value }}" id="{{ key }}" name="{{ name }}" pattern="[0-9]*" data-line="{{ line }}" class="js-qty__input" aria-live="polite">
+        <button type="button" class="js-qty__adjust js-qty__adjust--minus" aria-label="{% endraw %}{{ 'cart.label.decrease_quantity' | t }}{% raw %}">
+          {% endraw %}{% include 'icon-minus' %}{% raw %}
+          <span class="icon__fallback-text">−</span>
+        </button>
+        <button type="button" class="js-qty__adjust js-qty__adjust--plus" aria-label="{% endraw %}{{ 'cart.label.increase_quantity' | t }}{% raw %}">
+          {% endraw %}{% include 'icon-plus' %}{% raw %}
+          <span class="icon__fallback-text">+</span>
+        </button>
+      </div>
+    {% endraw %}
+  </script>
+
+  {% if template.name == 'product' %}
+    <div id="ProductModal" class="modal">
+      <div class="modal__inner">
+        <img src="" id="ProductZoomImg" class="product-modal__image">
+      </div>
+      <button type="button" class="modal__close js-modal-close text-link">
+        {% include 'icon-close' %}
+        <span class="icon__fallback-text">{{ 'general.accessibility.close_modal' | t | json }}</span>
+      </button>
+    </div>
+  {% endif %}
+ {% include 'sweettooth-initializer' %}
+
+ {% include 'sweettooth-tab-widget' %}
+
+{% include "hurrify-snippet" %}
+  
+  <script type="text/javascript">
+amzn_assoc_placement = "adunit0";
+amzn_assoc_search_bar = "true";
+amzn_assoc_tracking_id = "odlinkz-20";
+amzn_assoc_search_bar_position = "bottom";
+amzn_assoc_ad_mode = "search";
+amzn_assoc_ad_type = "smart";
+amzn_assoc_marketplace = "amazon";
+amzn_assoc_region = "US";
+amzn_assoc_title = "Shop Related Products";
+amzn_assoc_default_search_phrase = "beats by dre";
+amzn_assoc_default_category = "All";
+amzn_assoc_linkid = "67c57023b6ac9e1de989b842916862de";
+</script>
+  
+<script src="//z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US"></script>
+  <div id="amzn-assoc-ad-7f03692e-970d-4afb-9624-c04b8612d32f"></div><script async src="//z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US&adInstanceId=7f03692e-970d-4afb-9624-c04b8612d32f"></script>
+  </body>
+</html>
